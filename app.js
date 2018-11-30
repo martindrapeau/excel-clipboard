@@ -31,10 +31,11 @@ $(document).ready(function() {
     if (!data) return;
 
     data.getAsString(function(text) {
-      text = text.trim('\r\n');
+      text = text.replace(/\r/g, '').trim('\n');
+      var rowsOfText = text.split('\n');
       var header = [];
       var rows = [];
-      text.split('\r\n').forEach(function(rowAsText) {
+      rowsOfText.forEach(function(rowAsText) {
         // Remove wrapping double quotes
         var row = rowAsText.split('\t').map(function(colAsText) {
           return colAsText.trim().replace(/^"(.*)"$/, '$1');
