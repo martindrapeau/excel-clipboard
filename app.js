@@ -51,6 +51,7 @@ $(document).ready(function() {
         }
       });
       buildTable(header, rows);
+      $('p.message').html(rows.length + ' rows loaded');
     });
   }
 
