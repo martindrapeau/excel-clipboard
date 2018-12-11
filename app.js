@@ -1,5 +1,20 @@
 $(document).ready(function() {
 
+  function saveAndAddClearButton(header, rows) {
+    window.localStorage.header = JSON.stringify(header);
+    window.localStorage.rows = JSON.stringify(rows);
+    window.localStorage.date = (new Date()).toString();
+
+    var $clear = $('<button class="btn btn-sm btn-outline-danger clear">Clear</button>');
+    $('p.message').append($clear);
+    $clear.click(function(e) {
+      delete window.localStorage.header;
+      delete window.localStorage.rows;
+      delete window.localStorage.date;
+      window.location.reload();
+    });
+  }
+
   function buildTable(header, rows) {
     var $thead = $('table>thead').empty();
     var $tbody = $('table>tbody').empty();
@@ -15,6 +30,8 @@ $(document).ready(function() {
         $tr.append('<td>' + value + '</td>');
       });
     });
+    $('p.message').html(rows.length + ' rows loaded. ');
+    saveAndAddClearButton(header, rows);
   }
 
   function onPaste(e) {
@@ -51,10 +68,17 @@ $(document).ready(function() {
         }
       });
       buildTable(header, rows);
-      $('p.message').html(rows.length + ' rows loaded');
     });
   }
 
   $(document).on('paste', onPaste);
+
+  // Attempt to restore from local storage
+  try {
+    var header = JSON.parse(window.localStorage.header);
+    var rows = JSON.parse(window.localStorage.rows);
+    buildTable(header, rows);
+    $('p.message').append('<br/><em>' + window.localStorage.date + '</em>');
+  } catch (err) {}
 
 });
